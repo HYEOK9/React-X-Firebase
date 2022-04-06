@@ -38,14 +38,16 @@ const Auth = () => {
         }
     };
 
-    const googleLogin = () => {
-        let provider = new GoogleAuthProvider();
+    const onClick = (event) => {
+        let provider;
+        if (event.target.name == 'google') {
+            provider = new GoogleAuthProvider();
+        } else if (event.target.name == 'github') {
+            provider = new GithubAuthProvider();
+        }
         signInWithPopup(auth, provider);
     };
-    const githubLogin = () => {
-        let provider = new GithubAuthProvider();
-        signInWithPopup(auth, provider);
-    };
+
     return (
         <div>
             <form onSubmit={onSubmit}>
@@ -79,8 +81,12 @@ const Auth = () => {
                 </div>
             </form>
 
-            <button onClick={googleLogin}>google이메일로 로그인</button>
-            <button onClick={githubLogin}>Github로 로그인</button>
+            <button name='google' onClick={onClick}>
+                google이메일로 로그인
+            </button>
+            <button name='github' onClick={onClick}>
+                Github로 로그인
+            </button>
         </div>
     );
 };
