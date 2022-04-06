@@ -5,6 +5,7 @@ import {
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
+    GithubAuthProvider,
 } from 'firebase/auth';
 
 const Auth = () => {
@@ -37,8 +38,12 @@ const Auth = () => {
         }
     };
 
-    const onClick = () => {
+    const googleLogin = () => {
         let provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider);
+    };
+    const githubLogin = () => {
+        let provider = new GithubAuthProvider();
         signInWithPopup(auth, provider);
     };
     return (
@@ -74,8 +79,8 @@ const Auth = () => {
                 </div>
             </form>
 
-            <button onClick={onClick}>google이메일로 로그인</button>
-            <button>Github로 로그인</button>
+            <button onClick={googleLogin}>google이메일로 로그인</button>
+            <button onClick={githubLogin}>Github로 로그인</button>
         </div>
     );
 };
