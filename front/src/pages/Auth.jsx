@@ -7,13 +7,16 @@ import {
     signInWithPopup,
     GithubAuthProvider,
 } from 'firebase/auth';
+import { async } from '@firebase/util';
 
 const Auth = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
     const onChange = (event) => {
-        const { name, value } = event.target;
+        const {
+            target: { name, value },
+        } = event;
         if (name === 'email') {
             setEmail(value);
         } else if (name === 'password') {
@@ -38,14 +41,17 @@ const Auth = () => {
         }
     };
 
-    const onClick = (event) => {
+    const onClick = async (event) => {
         let provider;
-        if (event.target.name == 'google') {
+        const {
+            target: { name },
+        } = event;
+        if (name == 'google') {
             provider = new GoogleAuthProvider();
-        } else if (event.target.name == 'github') {
+        } else if (name == 'github') {
             provider = new GithubAuthProvider();
         }
-        signInWithPopup(auth, provider);
+        await signInWithPopup(auth, provider);
     };
 
     return (
