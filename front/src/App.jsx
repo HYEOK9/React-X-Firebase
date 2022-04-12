@@ -1,6 +1,6 @@
 import Router from './components/Router';
 import { useEffect, useState } from 'react';
-import { auth, db } from './firebase';
+import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 const App = () => {
     const [isLoggedin, setIsLoggedIn] = useState(false);
