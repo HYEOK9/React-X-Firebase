@@ -12,7 +12,7 @@ const AppRouter = ({ isLoggedin, user }) => {
             <Routes>
                 {isLoggedin ? (
                     <>
-                        <Route path='/' element={<Home />} />
+                        <Route path='/' element={<Home user={user} />} />
                         <Route
                             path='/profile'
                             element={<Profile user={user} />}
