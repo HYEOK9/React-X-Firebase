@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
     collection,
+    doc,
     addDoc,
     query,
     onSnapshot,
@@ -53,7 +54,9 @@ const Home = ({ user }) => {
             }
         }
     };
-
+    const onDelete = async (id) => {
+        await deleteDoc(doc(db, 'tweets', id));
+    };
     return (
         <div>
             <form onSubmit={onSubmit}>
@@ -70,7 +73,7 @@ const Home = ({ user }) => {
                     <h4>
                         {'=>'} {item.content}
                     </h4>
-                    <button onClick={onDelete}>삭제</button>
+                    <button onClick={() => onDelete(item.docId)}>삭제</button>
                     <span style={{ fontSize: 12 }}>by {item.author}</span>
                 </div>
             ))}
