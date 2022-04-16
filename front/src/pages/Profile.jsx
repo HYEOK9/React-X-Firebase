@@ -7,7 +7,6 @@ const Profile = ({ user }) => {
         auth.signOut();
         navigate('/');
     };
-    console.log(user);
     return (
         <div>
             <h2>Profile</h2>

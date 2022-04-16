@@ -1,19 +1,27 @@
 import { useEffect, useState } from 'react';
-import { collection, addDoc, query, onSnapshot } from 'firebase/firestore';
+import {
+    collection,
+    addDoc,
+    query,
+    onSnapshot,
+    orderBy,
+    deleteDoc,
+} from 'firebase/firestore';
 import { db } from '../firebase';
 const Home = ({ user }) => {
     const [tweet, setTweet] = useState('');
     const [tweets, setTweets] = useState([]);
 
     const getTweets = () => {
-        const q = query(collection(db, 'tweets'));
+        const q = query(
+            collection(db, 'tweets'),
+            orderBy('tweetedTime', 'desc')
+        );
         onSnapshot(q, (querySnapshot) => {
-            const tweetArray = querySnapshot.docs
-                .map((doc) => ({
-                    ...doc.data(),
-                    docId: doc.id,
-                }))
-                .sort((a, b) => b.tweetedTime - a.tweetedTime);
+            const tweetArray = querySnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                docId: doc.id,
+            }));
             setTweets(tweetArray);
         });
     };
@@ -30,17 +38,19 @@ const Home = ({ user }) => {
     };
     const onSubmit = async (event) => {
         event.preventDefault();
-        try {
-            const docRef = await addDoc(collection(db, 'tweets'), {
-                content: tweet,
-                author: user.email,
-                userId: user.uid,
-                tweetedTime: Date.now(),
-            });
-            console.log('Document written with ID: ', docRef.id);
-            setTweet('');
-        } catch (e) {
-            console.error('Error adding document: ', e);
+        if (tweet === '') alert('트윗을 작성해주세요');
+        else {
+            try {
+                const docRef = await addDoc(collection(db, 'tweets'), {
+                    content: tweet,
+                    author: user.email,
+                    userId: user.uid,
+                    tweetedTime: Date.now(),
+                });
+                setTweet('');
+            } catch (e) {
+                alert(e);
+            }
         }
     };
 
@@ -55,16 +65,15 @@ const Home = ({ user }) => {
                 ></input>
                 <button>tweet</button>
             </form>
-            <ul>
-                {tweets.map((item) => (
-                    <div key={item.docId}>
-                        <h4>
-                            {'=>'} {item.content}
-                        </h4>
-                        <li style={{ fontSize: 12 }}>by {item.author}</li>
-                    </div>
-                ))}
-            </ul>
+            {tweets.map((item) => (
+                <div key={item.docId}>
+                    <h4>
+                        {'=>'} {item.content}
+                    </h4>
+                    <button onClick={onDelete}>삭제</button>
+                    <span style={{ fontSize: 12 }}>by {item.author}</span>
+                </div>
+            ))}
         </div>
     );
 };
