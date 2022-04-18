@@ -12,6 +12,7 @@ const Auth = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+
     const onChange = (event) => {
         const {
             target: { name, value },
@@ -22,6 +23,7 @@ const Auth = () => {
             setPassword(value);
         }
     };
+
     const onSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -31,6 +33,7 @@ const Auth = () => {
             alert(errorMsg);
         }
     };
+
     const newAccount = async (event) => {
         try {
             await createUserWithEmailAndPassword(auth, email, password);

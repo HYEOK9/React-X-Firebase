@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
 import {
     collection,
-    doc,
     addDoc,
     query,
     onSnapshot,
     orderBy,
-    deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import TweetContent from '../components/TweetContent';
+
 const Home = ({ user }) => {
     const [tweet, setTweet] = useState('');
     const [tweets, setTweets] = useState([]);
-
     const getTweets = () => {
         const q = query(
             collection(db, 'tweets'),
@@ -37,12 +36,13 @@ const Home = ({ user }) => {
         } = event;
         setTweet(value);
     };
+
     const onSubmit = async (event) => {
         event.preventDefault();
         if (tweet === '') alert('트윗을 작성해주세요');
         else {
             try {
-                const docRef = await addDoc(collection(db, 'tweets'), {
+                await addDoc(collection(db, 'tweets'), {
                     content: tweet,
                     author: user.email,
                     userId: user.uid,
@@ -54,28 +54,25 @@ const Home = ({ user }) => {
             }
         }
     };
-    const onDelete = async (id) => {
-        await deleteDoc(doc(db, 'tweets', id));
-    };
+
     return (
         <div>
             <form onSubmit={onSubmit}>
                 <input
                     type='text'
                     onChange={onChange}
-                    placeholder='What`s on your mind?'
+                    placeholder="what's on your mind?"
                     value={tweet}
                 ></input>
-                <button>tweet</button>
+                <button>upload</button>
             </form>
-            {tweets.map((item) => (
-                <div key={item.docId}>
-                    <h4>
-                        {'=>'} {item.content}
-                    </h4>
-                    <button onClick={() => onDelete(item.docId)}>삭제</button>
-                    <span style={{ fontSize: 12 }}>by {item.author}</span>
-                </div>
+            {tweets.map((tweet) => (
+                <TweetContent
+                    key={tweet.docId}
+                    tweet={tweet}
+                    isOwner={tweet.userId === user.uid}
+                    db={db}
+                />
             ))}
         </div>
     );
