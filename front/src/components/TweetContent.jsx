@@ -19,9 +19,7 @@ const TweetContent = ({ tweet, isOwner, db }) => {
         });
     };
     const onChange = (event) => {
-        const {
-            target: { value },
-        } = event;
+        const { value } = event.target;
         setNewContent(value);
     };
     return (

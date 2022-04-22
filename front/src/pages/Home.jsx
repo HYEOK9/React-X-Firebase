@@ -31,9 +31,7 @@ const Home = ({ user }) => {
     }, []);
 
     const onChange = (event) => {
-        const {
-            target: { value },
-        } = event;
+        const { value } = event.target;
         setTweet(value);
     };
 
@@ -54,7 +52,14 @@ const Home = ({ user }) => {
             }
         }
     };
-
+    const onFileChange = (event) => {
+        const { files } = event.target;
+        const reader = new FileReader();
+        reader.onloadend = (finishiedevent) => {
+            console.log(finishiedevent.target.result);
+        };
+        reader.readAsDataURL(files[0]);
+    };
     return (
         <div>
             <form onSubmit={onSubmit}>
@@ -66,6 +71,7 @@ const Home = ({ user }) => {
                 ></input>
                 <button>upload</button>
             </form>
+            <input type='file' accept='image/*' onChange={onFileChange}></input>
             {tweets.map((tweet) => (
                 <TweetContent
                     key={tweet.docId}
