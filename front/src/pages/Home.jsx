@@ -12,6 +12,7 @@ import TweetContent from '../components/TweetContent';
 const Home = ({ user }) => {
     const [tweet, setTweet] = useState('');
     const [tweets, setTweets] = useState([]);
+    const [file, setFile] = useState(null);
     const getTweets = () => {
         const q = query(
             collection(db, 'tweets'),
@@ -56,10 +57,12 @@ const Home = ({ user }) => {
         const { files } = event.target;
         const reader = new FileReader();
         reader.onloadend = (finishiedevent) => {
-            console.log(finishiedevent.target.result);
+            const { result } = finishiedevent.target;
+            setFile(result);
         };
         reader.readAsDataURL(files[0]);
     };
+
     return (
         <div>
             <form onSubmit={onSubmit}>
@@ -72,6 +75,19 @@ const Home = ({ user }) => {
                 <button>upload</button>
             </form>
             <input type='file' accept='image/*' onChange={onFileChange}></input>
+            {file && (
+                <div>
+                    <img src={file} height='300vh'></img>
+                    <button
+                        onClick={() => {
+                            setFile(null);
+                        }}
+                    >
+                        삭제
+                    </button>
+                </div>
+            )}
+
             {tweets.map((tweet) => (
                 <TweetContent
                     key={tweet.docId}
