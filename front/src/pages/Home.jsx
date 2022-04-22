@@ -61,6 +61,7 @@ const Home = ({ user }) => {
             setFile(result);
         };
         reader.readAsDataURL(files[0]);
+        console.log(file);
     };
 
     return (
