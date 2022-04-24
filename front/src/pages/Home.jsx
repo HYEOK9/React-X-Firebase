@@ -6,7 +6,8 @@ import {
     onSnapshot,
     orderBy,
 } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
+import { ref, uploadBytes } from 'firebase/storage';
 import TweetContent from '../components/TweetContent';
 
 const Home = ({ user }) => {
