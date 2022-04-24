@@ -1,6 +1,5 @@
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 const Profile = ({ user }) => {
     const navigate = useNavigate();
     const logOut = () => {
