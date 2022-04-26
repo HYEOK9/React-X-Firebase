@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import {
     collection,
     addDoc,
@@ -7,13 +8,14 @@ import {
     orderBy,
 } from 'firebase/firestore';
 import { db, storage } from '../firebase';
-import { ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadString } from 'firebase/storage';
 import TweetContent from '../components/TweetContent';
 
 const Home = ({ user }) => {
     const [tweet, setTweet] = useState('');
     const [tweets, setTweets] = useState([]);
     const [file, setFile] = useState(null);
+
     const getTweets = () => {
         const q = query(
             collection(db, 'tweets'),
@@ -39,8 +41,18 @@ const Home = ({ user }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        if (tweet === '') alert('트윗을 작성해주세요');
-        else {
+        if (tweet === '' && !file) alert('트윗을 작성해주세요');
+        if (file) {
+            try {
+                const fileRef = ref(storage, `${user.uid}/${uuidv4()}`);
+                await uploadString(fileRef, file, 'data_url').then((res) => {
+                    console.log(res);
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        /* else {
             try {
                 await addDoc(collection(db, 'tweets'), {
                     content: tweet,
@@ -52,8 +64,9 @@ const Home = ({ user }) => {
             } catch (e) {
                 alert(e);
             }
-        }
+        } */
     };
+
     const onFileChange = (event) => {
         const { files } = event.target;
         const reader = new FileReader();
