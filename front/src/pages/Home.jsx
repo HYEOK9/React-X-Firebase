@@ -8,7 +8,7 @@ import {
     orderBy,
 } from 'firebase/firestore';
 import { db, storage } from '../firebase';
-import { ref, uploadString } from 'firebase/storage';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import TweetContent from '../components/TweetContent';
 
 const Home = ({ user }) => {
@@ -23,7 +23,6 @@ const Home = ({ user }) => {
         );
         onSnapshot(q, (querySnapshot) => {
             const tweetArray = querySnapshot.docs.map((doc) => {
-                console.log(doc);
                 return {
                     ...doc.data(),
                     docId: doc.id,
@@ -47,15 +46,6 @@ const Home = ({ user }) => {
         if (!tweet && !file) alert('트윗을 작성해주세요');
         else {
             try {
-                await addDoc(collection(db, 'tweets'), {
-                    content: tweet,
-                    author: user.email,
-                    userId: user.uid,
-                    createdTime: Date.now(),
-                    isIMG: Boolean(file),
-                });
-                setTweet('');
-
                 if (file) {
                     const fileRef = await ref(
                         storage,
@@ -66,7 +56,25 @@ const Home = ({ user }) => {
                             console.log(res);
                         }
                     );
+                    await getDownloadURL(fileRef).then((url) => {
+                        addDoc(collection(db, 'tweets'), {
+                            content: tweet,
+                            author: user.email,
+                            userId: user.uid,
+                            createdTime: Date.now(),
+                            fileURL: url,
+                        });
+                    });
                     setFile(null);
+                } else {
+                    await addDoc(collection(db, 'tweets'), {
+                        content: tweet,
+                        author: user.email,
+                        userId: user.uid,
+                        createdTime: Date.now(),
+                        fileURL: '',
+                    });
+                    setTweet('');
                 }
             } catch (e) {
                 console.log(e);
