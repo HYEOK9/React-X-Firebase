@@ -14,18 +14,21 @@ import TweetContent from '../components/TweetContent';
 const Home = ({ user }) => {
     const [tweet, setTweet] = useState('');
     const [tweets, setTweets] = useState([]);
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState('');
 
     const getTweets = () => {
         const q = query(
             collection(db, 'tweets'),
-            orderBy('tweetedTime', 'desc')
+            orderBy('createdTime', 'desc')
         );
         onSnapshot(q, (querySnapshot) => {
-            const tweetArray = querySnapshot.docs.map((doc) => ({
-                ...doc.data(),
-                docId: doc.id,
-            }));
+            const tweetArray = querySnapshot.docs.map((doc) => {
+                console.log(doc);
+                return {
+                    ...doc.data(),
+                    docId: doc.id,
+                };
+            });
             setTweets(tweetArray);
         });
     };
@@ -41,30 +44,34 @@ const Home = ({ user }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        if (tweet === '' && !file) alert('트윗을 작성해주세요');
-        if (file) {
-            try {
-                const fileRef = ref(storage, `${user.uid}/${uuidv4()}`);
-                await uploadString(fileRef, file, 'data_url').then((res) => {
-                    console.log(res);
-                });
-            } catch (e) {
-                console.log(e);
-            }
-        }
-        /* else {
+        if (!tweet && !file) alert('트윗을 작성해주세요');
+        else {
             try {
                 await addDoc(collection(db, 'tweets'), {
                     content: tweet,
                     author: user.email,
                     userId: user.uid,
-                    tweetedTime: Date.now(),
+                    createdTime: Date.now(),
+                    isIMG: Boolean(file),
                 });
                 setTweet('');
+
+                if (file) {
+                    const fileRef = await ref(
+                        storage,
+                        `${user.email}/${Date.now()}/${uuidv4()}`
+                    );
+                    await uploadString(fileRef, file, 'data_url').then(
+                        (res) => {
+                            console.log(res);
+                        }
+                    );
+                    setFile(null);
+                }
             } catch (e) {
-                alert(e);
+                console.log(e);
             }
-        } */
+        }
     };
 
     const onFileChange = (event) => {
