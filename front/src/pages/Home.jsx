@@ -47,32 +47,35 @@ const Home = ({ user }) => {
         else {
             try {
                 if (file) {
+                    const createdTime = Date.now();
+                    const filePath = uuidv4();
                     const fileRef = await ref(
                         storage,
-                        `${user.email}/${Date.now()}/${uuidv4()}`
+                        `${user.email}/${createdTime}/${filePath}`
                     );
-                    await uploadString(fileRef, file, 'data_url').then(
-                        (res) => {
-                            console.log(res);
-                        }
-                    );
-                    await getDownloadURL(fileRef).then((url) => {
-                        addDoc(collection(db, 'tweets'), {
-                            content: tweet,
-                            author: user.email,
-                            userId: user.uid,
-                            createdTime: Date.now(),
-                            fileURL: url,
+                    await uploadString(fileRef, file, 'data_url').then(() => {
+                        getDownloadURL(fileRef).then((url) => {
+                            addDoc(collection(db, 'tweets'), {
+                                content: tweet,
+                                author: user.email,
+                                userId: user.uid,
+                                createdTime: createdTime,
+                                fileURL: url,
+                                filePath: filePath,
+                            });
                         });
                     });
+
                     setFile(null);
+                    setTweet('');
                 } else {
                     await addDoc(collection(db, 'tweets'), {
                         content: tweet,
                         author: user.email,
                         userId: user.uid,
                         createdTime: Date.now(),
-                        fileURL: '',
+                        fileURL: null,
+                        filePath: null,
                     });
                     setTweet('');
                 }
@@ -101,9 +104,14 @@ const Home = ({ user }) => {
                     placeholder="what's on your mind?"
                     value={tweet}
                 ></input>
-                <button>upload</button>
+                <button>tweet</button>
             </form>
-            <input type='file' accept='image/*' onChange={onFileChange}></input>
+            <input
+                type='file'
+                id='fileinput'
+                accept='image/*'
+                onChange={onFileChange}
+            ></input>
             {file && (
                 <div>
                     <img src={file} height='300vh'></img>
