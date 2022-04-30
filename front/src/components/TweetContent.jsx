@@ -20,6 +20,18 @@ const TweetContent = ({ tweet, isOwner, db }) => {
             }
         }
     };
+    const onDeleteFile = async () => {
+        await deleteObject(
+            ref(
+                storage,
+                `${tweet.author}/${tweet.createdTime}/${tweet.filePath}`
+            )
+        );
+        await updateDoc(doc(db, 'tweets', tweet.docId), {
+            fileURL: null,
+            filePath: null,
+        });
+    };
 
     const onSubmit = async (event) => {
         event.preventDefault();
@@ -65,6 +77,12 @@ const TweetContent = ({ tweet, isOwner, db }) => {
                             ></input>
                             <button>확인</button>
                         </form>
+                        <div>
+                            {tweet.fileURL && (
+                                <img src={tweet.fileURL} height='300vh'></img>
+                            )}
+                        </div>
+                        <button onClick={onDeleteFile}>삭제</button>
                     </>
                 )}
             </h4>
