@@ -55,7 +55,6 @@ const Home = ({ user }) => {
                     await uploadString(fileRef, file, 'data_url');
                     fileURL = await getDownloadURL(fileRef);
                 }
-
                 const newObj = {
                     content: tweet,
                     author: user.email,

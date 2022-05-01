@@ -10,18 +10,11 @@ const TweetContent = ({ tweet, isOwner, db }) => {
     const onDelete = async () => {
         if (window.confirm('삭제 하시겠습니까?')) {
             await deleteDoc(doc(db, 'tweets', tweet.docId));
-            if (tweet.fileURL) {
-                await deleteObject(ref(storage, tweet.filePath));
-            }
+            if (tweet.fileURL) onDeleteFile();
         }
     };
     const onDeleteFile = async () => {
-        await deleteObject(
-            ref(
-                storage,
-                `${tweet.author}/${tweet.createdTime}/${tweet.filePath}`
-            )
-        );
+        await deleteObject(ref(storage, tweet.filePath));
         await updateDoc(doc(db, 'tweets', tweet.docId), {
             fileURL: null,
             filePath: null,
