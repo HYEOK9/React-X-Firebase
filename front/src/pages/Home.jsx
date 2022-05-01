@@ -46,39 +46,27 @@ const Home = ({ user }) => {
         if (!tweet && !file) alert('트윗을 작성해주세요');
         else {
             try {
+                const createdTime = Date.now();
+                let fileURL = null;
+                let filePath = null;
                 if (file) {
-                    const createdTime = Date.now();
-                    const filePath = uuidv4();
-                    const fileRef = await ref(
-                        storage,
-                        `${user.email}/${createdTime}/${filePath}`
-                    );
-                    await uploadString(fileRef, file, 'data_url').then(() => {
-                        getDownloadURL(fileRef).then((url) => {
-                            addDoc(collection(db, 'tweets'), {
-                                content: tweet,
-                                author: user.email,
-                                userId: user.uid,
-                                createdTime: createdTime,
-                                fileURL: url,
-                                filePath: filePath,
-                            });
-                        });
-                    });
-
-                    setFile(null);
-                    setTweet('');
-                } else {
-                    await addDoc(collection(db, 'tweets'), {
-                        content: tweet,
-                        author: user.email,
-                        userId: user.uid,
-                        createdTime: Date.now(),
-                        fileURL: null,
-                        filePath: null,
-                    });
-                    setTweet('');
+                    filePath = `${user.email}/${createdTime}/${uuidv4()}`;
+                    const fileRef = await ref(storage, filePath);
+                    await uploadString(fileRef, file, 'data_url');
+                    fileURL = await getDownloadURL(fileRef);
                 }
+
+                const newObj = {
+                    content: tweet,
+                    author: user.email,
+                    userId: user.uid,
+                    createdTime: Date.now(),
+                    fileURL,
+                    filePath,
+                };
+                await addDoc(collection(db, 'tweets'), newObj);
+                setTweet('');
+                setFile(null);
             } catch (e) {
                 console.log(e);
             }

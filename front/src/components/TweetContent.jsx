@@ -11,12 +11,7 @@ const TweetContent = ({ tweet, isOwner, db }) => {
         if (window.confirm('삭제 하시겠습니까?')) {
             await deleteDoc(doc(db, 'tweets', tweet.docId));
             if (tweet.fileURL) {
-                await deleteObject(
-                    ref(
-                        storage,
-                        `${tweet.author}/${tweet.createdTime}/${tweet.filePath}`
-                    )
-                );
+                await deleteObject(ref(storage, tweet.filePath));
             }
         }
     };
@@ -40,10 +35,12 @@ const TweetContent = ({ tweet, isOwner, db }) => {
             content: newContent,
         });
     };
+
     const onChange = (event) => {
         const { value } = event.target;
         setNewContent(value);
     };
+
     return (
         <div>
             <h4>
