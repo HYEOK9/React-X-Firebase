@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {
     collection,
@@ -15,6 +15,7 @@ const Home = ({ user }) => {
     const [tweet, setTweet] = useState('');
     const [tweets, setTweets] = useState([]);
     const [file, setFile] = useState('');
+    const fileInput = useRef();
 
     const getTweets = () => {
         const q = query(
@@ -65,7 +66,7 @@ const Home = ({ user }) => {
                 };
                 await addDoc(collection(db, 'tweets'), newObj);
                 setTweet('');
-                setFile(null);
+                onClearFile();
             } catch (e) {
                 console.log(e);
             }
@@ -76,12 +77,15 @@ const Home = ({ user }) => {
         const { files } = event.target;
         const reader = new FileReader();
         reader.onloadend = (finishiedevent) => {
-            const { result } = finishiedevent.target;
+            const { result } = finishiedevent.currentTarget;
             setFile(result);
         };
         reader.readAsDataURL(files[0]);
     };
-
+    const onClearFile = () => {
+        setFile(null);
+        fileInput.current.value = null;
+    };
     return (
         <div>
             <form onSubmit={onSubmit}>
@@ -95,20 +99,14 @@ const Home = ({ user }) => {
             </form>
             <input
                 type='file'
-                id='fileinput'
                 accept='image/*'
                 onChange={onFileChange}
+                ref={fileInput}
             ></input>
             {file && (
                 <div>
                     <img src={file} height='300vh'></img>
-                    <button
-                        onClick={() => {
-                            setFile(null);
-                        }}
-                    >
-                        삭제
-                    </button>
+                    <button onClick={onClearFile}>삭제</button>
                 </div>
             )}
 

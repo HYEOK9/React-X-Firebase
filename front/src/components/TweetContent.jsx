@@ -6,19 +6,18 @@ import { storage } from '../firebase';
 const TweetContent = ({ tweet, isOwner, db }) => {
     const [edit, setEdit] = useState(false);
     const [newContent, setNewContent] = useState(tweet.content);
-
     const onDelete = async () => {
         if (window.confirm('삭제 하시겠습니까?')) {
+            if (tweet.fileURL) await onDeleteFile();
             await deleteDoc(doc(db, 'tweets', tweet.docId));
-            if (tweet.fileURL) onDeleteFile();
         }
     };
     const onDeleteFile = async () => {
-        await deleteObject(ref(storage, tweet.filePath));
         await updateDoc(doc(db, 'tweets', tweet.docId), {
             fileURL: null,
             filePath: null,
         });
+        await deleteObject(ref(storage, tweet.filePath));
     };
 
     const onSubmit = async (event) => {
@@ -69,10 +68,15 @@ const TweetContent = ({ tweet, isOwner, db }) => {
                         </form>
                         <div>
                             {tweet.fileURL && (
-                                <img src={tweet.fileURL} height='300vh'></img>
+                                <>
+                                    <img
+                                        src={tweet.fileURL}
+                                        height='300vh'
+                                    ></img>{' '}
+                                    <button onClick={onDeleteFile}>삭제</button>
+                                </>
                             )}
                         </div>
-                        <button onClick={onDeleteFile}>삭제</button>
                     </>
                 )}
             </h4>
