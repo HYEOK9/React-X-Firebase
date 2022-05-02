@@ -29,13 +29,17 @@ const MyTweets = ({ user }) => {
 
     return (
         <div>
-            {myTweets.map((tweet) => (
-                <div key={tweet.createdTime}>
-                    <h3>
-                        {'=>'} {tweet.content}
-                    </h3>
-                </div>
-            ))}
+            {myTweets.length ? (
+                myTweets.map((tweet) => (
+                    <div key={tweet.createdTime}>
+                        <h3>
+                            {'=>'} {tweet.content}
+                        </h3>
+                    </div>
+                ))
+            ) : (
+                <span style={{ color: 'gray' }}>작성한 트윗이 없습니다.</span>
+            )}
         </div>
     );
 };
