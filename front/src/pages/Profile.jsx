@@ -14,7 +14,7 @@ const Profile = ({ user }) => {
     return (
         <div>
             <h2>Profile</h2>
-            {user.reloadUserInfo.email}
+            <span sylte={{ color: 'gray' }}>{user.reloadUserInfo.email}</span>
             <button onClick={logOut}>로그아웃</button>
             <button
                 onClick={() => {

@@ -1,11 +1,4 @@
-import {
-    collection,
-    query,
-    where,
-    orderBy,
-    onSnapshot,
-    getDocs,
-} from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { db } from '../firebase';
 const MyTweets = ({ user }) => {
