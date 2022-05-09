@@ -12,16 +12,18 @@ const Profile = ({ user }) => {
     };
 
     return (
-        <div>
-            <h2>Profile</h2>
+        <div className='container'>
             <span sylte={{ color: 'gray' }}>{user.reloadUserInfo.email}</span>
-            <button onClick={logOut}>로그아웃</button>
+            <span className='formBtn cancelBtn logOut' onClick={logOut}>
+                Log Out
+            </span>
             <button
+                className='formBtn'
                 onClick={() => {
                     setSeeMyTweets((cur) => !cur);
                 }}
             >
-                My tweets
+                내 트윗 보기
             </button>
             {seeMyTweets && (
                 <div>

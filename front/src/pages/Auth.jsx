@@ -7,6 +7,12 @@ import {
     signInWithPopup,
     GithubAuthProvider,
 } from 'firebase/auth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faTwitter,
+    faGoogle,
+    faGithub,
+} from '@fortawesome/free-brands-svg-icons';
 
 const Auth = () => {
     const [email, setEmail] = useState('');
@@ -57,8 +63,14 @@ const Auth = () => {
     };
 
     return (
-        <div>
-            <form onSubmit={onSubmit}>
+        <div className='authContainer'>
+            <FontAwesomeIcon
+                icon={faTwitter}
+                color={'#04AAFF'}
+                size='3x'
+                style={{ marginBottom: 30 }}
+            />
+            <form onSubmit={onSubmit} className='container'>
                 <div>
                     <input
                         name='email'
@@ -67,6 +79,7 @@ const Auth = () => {
                         value={email}
                         onChange={onChange}
                         required
+                        className='authInput'
                     ></input>
                 </div>
                 <div>
@@ -77,23 +90,29 @@ const Auth = () => {
                         value={password}
                         onChange={onChange}
                         required
+                        className='authInput'
                     ></input>
                 </div>
                 <div>
-                    <button type='submit' value='login'>
+                    <button
+                        type='submit'
+                        value='login'
+                        className='authInput authSubmit'
+                    >
                         로그인
                     </button>
-                    <button type='button' onClick={newAccount}>
-                        회원가입
-                    </button>
+                    <span onClick={newAccount}>회원가입</span>
                 </div>
             </form>
-
-            <button name='google' onClick={onClick}>
-                google이메일로 로그인
-            </button>
-            <button name='github' onClick={onClick}>
+            <div className='authBtns'>
+                <button name='google' onClick={onClick} className='authBtn'>
+                    google이메일로 로그인
+                    <FontAwesomeIcon icon={faGoogle} />
+                </button>
+            </div>
+            <button name='github' onClick={onClick} className='authBtn'>
                 Github로 로그인
+                <FontAwesomeIcon icon={faGithub} />
             </button>
         </div>
     );

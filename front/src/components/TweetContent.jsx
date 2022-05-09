@@ -2,6 +2,8 @@ import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
 import { useState } from 'react';
 import { storage } from '../firebase';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 const TweetContent = ({ tweet, isOwner, db }) => {
     const [edit, setEdit] = useState(false);
@@ -34,8 +36,8 @@ const TweetContent = ({ tweet, isOwner, db }) => {
     };
 
     return (
-        <div>
-            <h4>
+        <div className='tweet'>
+            <h3>
                 {'->'} {tweet.content}
                 <div>
                     {tweet.fileURL && (
@@ -43,21 +45,21 @@ const TweetContent = ({ tweet, isOwner, db }) => {
                     )}
                 </div>
                 {isOwner && (
-                    <>
-                        <button
-                            onClick={() => setEdit((cur) => !cur)}
-                            style={{ marginLeft: 10 }}
-                        >
-                            수정
-                        </button>
-                        <button onClick={onDelete} style={{ marginLeft: 5 }}>
-                            삭제
-                        </button>
-                    </>
+                    <div className='nweet__actions'>
+                        <span onClick={() => setEdit((cur) => !cur)}>
+                            <FontAwesomeIcon icon={faPencilAlt} />
+                        </span>
+                        <span onClick={onDelete}>
+                            <FontAwesomeIcon icon={faTrash} />
+                        </span>
+                    </div>
                 )}
                 {edit && (
                     <>
-                        <form onSubmit={onSubmit} style={{ marginTop: 20 }}>
+                        <form
+                            onSubmit={onSubmit}
+                            className='container nweetEdit'
+                        >
                             <input
                                 type='text'
                                 value={newContent}
@@ -79,8 +81,10 @@ const TweetContent = ({ tweet, isOwner, db }) => {
                         </div>
                     </>
                 )}
-            </h4>
-            <span style={{ fontSize: 12 }}>by {tweet.author}</span>
+            </h3>
+            <span style={{ fontSize: 8, marginTop: 10 }}>
+                by {tweet.author}
+            </span>
         </div>
     );
 };

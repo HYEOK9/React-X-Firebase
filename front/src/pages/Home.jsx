@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 import TweetContent from '../components/TweetContent';
@@ -29,16 +28,18 @@ const Home = ({ user }) => {
     }, []);
 
     return (
-        <div>
+        <div className='container'>
             <UploadTweet user={user} />
-            {tweets.map((tweet) => (
-                <TweetContent
-                    key={tweet.docId}
-                    tweet={tweet}
-                    isOwner={tweet.userId === user.uid}
-                    db={db}
-                />
-            ))}
+            <div style={{ marginTop: 30 }}>
+                {tweets.map((tweet) => (
+                    <TweetContent
+                        key={tweet.docId}
+                        tweet={tweet}
+                        isOwner={tweet.userId === user.uid}
+                        db={db}
+                    />
+                ))}
+            </div>
         </div>
     );
 };
